@@ -12,7 +12,7 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 public class HttpResponse {
-	private int statusCode = 200;
+	private int statusCode = 200; // Ä¬ÈÏ³õÊ¼×´Ì¬Âë
 	private Socket socekt;
 	private OutputStream outputStream;
 	private File file;
