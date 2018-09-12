@@ -1,0 +1,148 @@
+http协议  ---  超文本传输协议
+是浏览器与服务器之间通讯的应用层协议。而HTTP协议要求底层的传输层协议为可靠传输协议，通常
+使用的就是TCP协议
+
+HTTP协议规定了客户端与服务端之间的通讯方式，以及数据格式等定义。
+其中，HTTP协议要求客户端与服务端发送的数据中的字符部分所允许的字符集为：ISO8859-1。这是
+一个欧洲字符编码集，其中不支持中文。所以我们在HTTP协议使用中客户端与服务端发送的数据都
+不会直接包含中文字符
+
+HTTP协议为短连接模式，非长连接。
+
+通讯方式的规则：
+HTTP协议要求客户端与服务端的通讯为：一问一答的方式。即：
+客户端发起请求(request)，服务端处理请求后予以响应(response)。
+所以在HTTP协议中，服务端永远不会主动发送数据给客户端。
+
+HTTP协议1.0中，通讯为：
+客户端发起TCP与服务端建立连接，然后发送一个请求，当服务端处理该请求并予以相应后及
+断开TCP连接。HTTP1.1协议则改变为建立TCP连接后，可以进行多次请求与响应后再最终断开连接。
+对于现在的网络应用中，构建一个复杂页面需要客户端尽力多次请求才能得到，对此HTTP1.1协议
+更高效并节约资源开销。
+
+
+HTTP请求
+请求时客户端发送给服务端的内容
+一个请求由三部分组成：
+请求行，消息头，消息正文
+
+
+请求行：
+请求行是一行字符串，HTTP协议规定一行字符串的结束是以(CRLF)结尾
+CR:回车符ASC编码对应值：13
+LF:换行符ASC编码对应值：10
+
+请求行内容分为三部分（三者之间必须有空格）：
+ Method   Url    Protocol (CRLF)
+请求方式 资源路径     协议版本
+
+例如：
+GET /index.html HTTP/1.1(CRLF)
+
+
+消息头：
+消息头由若干行组成，是客户端发送给服务器的一些附加信息。有的是用来告知服务端当前客户端自身的
+信息（比如使用什么浏览器，我的操作系统是什么等），有的是用来维持通讯的一些处理操作信息等等
+
+每一个消息头由一行组成，格式：
+name: value(CRLF)
+
+注：消息头结束是以单独的CRLF表示，即：最后一个消息头发送完毕后，客户端会单独再发送一个
+CRLF表示消息头部分结束
+
+例如：
+Host: localhost:8088(CRLF)
+Connection: keep-alive(CRLF)
+Cache-Control: max-age=0(CRLF)
+Upgrade-Insecure-Requests: 1(CRLF)
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36(CRLF)
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8(CRLF)
+Accept-Encoding: gzip, deflate, br(CRLF)
+Accept-Language: zh-CN,zh;q=0.9(CRLF)(CRLF)
+
+消息正文
+一个请求中可以不含有消息正文。消息正文是2进制数据，是用户提交给服务端的数据。它可能是一个
+表单数据(用户在页面输入的注册信息等)，也可能是附件等。
+
+一个请求内容大致为：
+GET / HTTP/1.1
+Host: localhost:8088
+Connection: keep-alive
+Cache-Control: max-age=0
+Upgrade-Insecure-Requests: 1
+User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/69.0.3497.81 Safari/537.36
+Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8
+Accept-Encoding: gzip, deflate, br
+Accept-Language: zh-CN,zh;q=0.9
+
+
+
+HTTP响应(Response)
+响应是服务端发送给客户端的内容，HTTP协议对响应也有格式上的定义。
+一个响应应当包含的内容有三部分：
+状态行、响应头、响应正文
+
+1：状态行
+状态行也是一行字符串(以CRLF结尾)，包含三部分信息：
+protocol status_code status_reason(CRLF)
+协议版本     状态代码        状态描述 (CRLF)
+
+其中状态代码是一个三位数组成，分为5类：
+1xx：保留
+2xx：成功，指服务端成功处理请求
+3xx：重定向，指服务端要求客户端再次发起请求到指定资源
+4xx：客户端错误
+5xx：服务端错误
+
+
+常见：
+200：服务端成功处理并予以响应
+404：客户端请求错误
+500：服务端在处理请求时发生了错误。
+
+
+具体的状态代码的含义HTTP协议有明确的规定用法。
+
+200, "OK"
+201, "Created"
+202, "Accepted"
+204, "No Content"
+301, "Moved Permanently"
+302, "Moved Temporarily"
+304, "Not Modified"
+400, "Bad Request"
+401, "Unauthorized"
+403, "Forbidden"
+404, "Not Found"
+500, "Internal Server Error"
+501, "Not Implemented"
+502, "Bad Gateway"
+503, "Service Unavailable"
+
+
+例如：
+HTTP/1.1 200 OK(CRLF)
+
+2:响应头
+响应头与请求中的消息头格式一致，是服务端发送给客户端的
+附加信息。
+比较常见的头:
+Content-Type:用于说明响应正文的数据类型
+Content-Length:用于说明响应正文的数据长度(字节量)
+
+
+3:响应正文
+响应正文也是2进制数据，是服务端发送给客户端实际要响应
+的数据，通常是客户端实际请求的资源数据。比如图片，页面
+等等。
+一个响应中也不一定必须包含响应正文部分。
+若要让浏览器能够正确理解该响应正文内容，必须设置上述对应
+的两个响应头。
+
+
+一个响应的内容大致为:
+HTTP/1.1 200 OK(CRLF)
+Content-Type: text/html(CRLF)
+Content-Length: 12398(CRLF)(CRLF)
+10010101010101010101010010110000111.....
+
